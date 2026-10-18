@@ -798,12 +798,22 @@ svg {
 }
 
 .pcm {
-  margin: 0.6rem 0;
+  margin: 0.4rem auto 0.7rem auto;
   background: #fff;
   border: 1px solid #c5ccd3;
   border-radius: 8px;
-  padding: 8px 10px;
+  padding: 6px 12px;
   color: #1a2a34;
+  max-width: 620px;
+  width: 100%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.pcm svg {
+  width: 100%;
+  max-height: 125px;
+  display: block;
+  margin: 0 auto;
 }
 
 .pcm svg .dv {

@@ -1207,17 +1207,24 @@ export default function App() {
       {/* PC Physical connection diagram */}
       {!isSessionOpen && (
         <div id="pcm" className="pcm">
-          <b>Conexión física del PC</b>{' '}
-          <span className="mu">
-            arrastra el enchufe azul al puerto 4 de R1, R2 o R3 (o pulsa ese puerto)
-          </span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px', flexWrap: 'wrap', gap: '4px' }}>
+            <span>
+              <b>Conexión física del PC</b>{' '}
+              <span className="mu" style={{ fontSize: '11px' }}>
+                (arrastra el enchufe azul o pulsa el puerto 4 de R1, R2 o R3)
+              </span>
+            </span>
+            <span style={{ fontSize: '11px', fontWeight: 600, color: '#1b8fcf' }}>
+              Conectado a: <b>{pc} (ether4)</b>
+            </span>
+          </div>
           <svg
             id="pcs"
             ref={pcSvgRef}
             viewBox="0 0 740 200"
             role="group"
             aria-label="Cable del PC conectado al puerto ether4 de un router"
-            style={{ width: '100%', height: 'auto', display: 'block' }}
+            style={{ width: '100%', maxHeight: '125px', height: 'auto', display: 'block', margin: '0 auto' }}
           >
             {/* PC Box */}
             <rect x="20" y="40" width="90" height="64" rx="5" className="dv" />
@@ -2015,8 +2022,8 @@ export default function App() {
           </div>
           <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
             <button
-              onClick={() => printWinboxGuidePdf(activeTab)}
-              title="Descargar o imprimir la guía paso a paso de Winbox en documento PDF"
+              onClick={() => printWinboxGuidePdf()}
+              title="Descargar o imprimir la guía paso a paso completa en documento PDF (R1, R2 y R3)"
               style={{
                 fontWeight: 600,
                 background: '#1f6f4a',
@@ -2028,7 +2035,7 @@ export default function App() {
                 padding: '0.2rem 0.65rem',
               }}
             >
-              📄 Descargar Guía Winbox en PDF
+              📄 Descargar Guía en PDF
             </button>
             <button
               onClick={copyStepsText}
@@ -2199,18 +2206,19 @@ export default function App() {
             <span>📑 Guía de Estudio y Examen: R1, R2 y R3</span>
             <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
               <button
-                onClick={() => printWinboxGuidePdf(wbGuideTab || cur)}
+                onClick={() => printWinboxGuidePdf()}
+                title="Descargar la guía paso a paso completa en documento PDF (R1, R2 y R3)"
                 style={{
                   background: '#238636',
                   color: '#fff',
                   border: 'none',
-                  padding: '0.25rem 0.7rem',
+                  padding: '0.25rem 0.75rem',
                   fontWeight: 600,
                   fontSize: '12px',
                   borderRadius: '4px',
                 }}
               >
-                📄 Descargar en PDF / Imprimir
+                📄 Descargar Guía en PDF
               </button>
               <button
                 onClick={() => setShowFullGuideModal(false)}

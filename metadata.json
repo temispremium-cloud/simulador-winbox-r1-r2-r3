@@ -2,5 +2,7 @@
   "name": "Simulador Winbox: R1, R2 y R3",
   "description": "Simulador interactivo de Winbox y MikroTik RouterOS para configurar R1, R2 y R3 con cables físicos, terminal CLI y entorno Winbox completo.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }
