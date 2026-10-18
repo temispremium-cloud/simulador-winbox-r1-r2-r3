@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useTransition } from 'react';
 import { GUIDE_FULL, printWinboxGuidePdf, downloadRouterScript } from './guideData';
+import physicalDiagramImg from './assets/images/diagrama_conexiones_fisicas.png';
 
 // IP Math and helpers
 const N = (ip: string) => ip.split('.').reduce((a, x) => a * 256 + +x, 0);
@@ -221,9 +222,19 @@ export default function App() {
   const [fsPanel, setFsPanel] = useState<'revisor' | 'guia' | 'mapa' | 'cables' | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [showFullGuideModal, setShowFullGuideModal] = useState<boolean>(false);
+  const [showDiagramModal, setShowDiagramModal] = useState<boolean>(false);
   const [wbGuideTab, setWbGuideTab] = useState<'R1' | 'R2' | 'R3'>('R1');
   const [doneSteps, setDoneSteps] = useState<Record<string, boolean>>({});
   const [guideMode, setGuideMode] = useState<'winbox' | 'cli'>('winbox');
+
+  const downloadPhysicalDiagram = () => {
+    const link = document.createElement('a');
+    link.href = physicalDiagramImg;
+    link.download = 'diagrama_conexiones_fisicas.png';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const copyToClipboard = (text: string, id: string) => {
     const onSuccess = () => {
@@ -1195,6 +1206,13 @@ export default function App() {
             {showMap ? 'Ocultar mapa' : 'Mostrar mapa'}
           </button>
           <button
+            onClick={() => setShowDiagramModal(true)}
+            style={{ fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px', background: '#eef2f6', border: '1px solid #c0c8d0' }}
+            title="Ver y descargar la imagen real de las conexiones de los 3 routers y switch"
+          >
+            📷 Diagrama Físico Real
+          </button>
+          <button
             onClick={toggleFullScreen}
             style={{ fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}
           >
@@ -1214,9 +1232,29 @@ export default function App() {
                 (arrastra el enchufe azul o pulsa el puerto 4 de R1, R2 o R3)
               </span>
             </span>
-            <span style={{ fontSize: '11px', fontWeight: 600, color: '#1b8fcf' }}>
-              Conectado a: <b>{pc} (ether4)</b>
-            </span>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <span style={{ fontSize: '11px', fontWeight: 600, color: '#1b8fcf' }}>
+                Conectado a: <b>{pc} (ether4)</b>
+              </span>
+              <button
+                onClick={() => setShowDiagramModal(true)}
+                style={{
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  padding: '2px 7px',
+                  background: '#f0f4f8',
+                  border: '1px solid #b8c4d0',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '3px',
+                }}
+                title="Ver y descargar diagrama físico real de cables y equipos"
+              >
+                📷 Ver Foto Real
+              </button>
+            </div>
           </div>
           <svg
             id="pcs"
@@ -1566,6 +1604,20 @@ export default function App() {
                 {isFullScreen ? '🗗 Vista estándar' : '⛶ Toda la pantalla'}
               </button>
 
+              <button
+                onClick={() => setShowDiagramModal(true)}
+                title="Ver y descargar diagrama físico real de conexiones"
+                style={{
+                  fontWeight: 600,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  background: '#f4f6f9',
+                }}
+              >
+                📷 Diagrama Físico
+              </button>
+
               {isFullScreen && (
                 <div style={{ display: 'inline-flex', gap: '4px' }}>
                   <button
@@ -1883,6 +1935,9 @@ export default function App() {
 
       {/* Full Guide Modal */}
       {showFullGuideModal && renderFullGuideModal()}
+
+      {/* Physical Diagram Modal */}
+      {showDiagramModal && renderDiagramModal()}
     </main>
   );
 
@@ -2424,9 +2479,166 @@ export default function App() {
     );
   }
 
+  function renderDiagramModal() {
+    return (
+      <div
+        className="guide-overlay"
+        onClick={() => setShowDiagramModal(false)}
+        style={{ zIndex: 99999 }}
+      >
+        <div
+          className="guide-card"
+          style={{ maxWidth: '960px', width: '95vw', maxHeight: '92vh', overflow: 'auto' }}
+          onClick={e => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div className="guide-header">
+            <span>📷 Diagrama de Conexiones Físicas Reales: R1, R2, R3, Switch y PC</span>
+            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+              <button
+                onClick={downloadPhysicalDiagram}
+                style={{
+                  background: '#1f6f4a',
+                  color: '#fff',
+                  border: 'none',
+                  padding: '0.3rem 0.85rem',
+                  fontWeight: 600,
+                  fontSize: '12px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                }}
+              >
+                📥 Descargar Imagen
+              </button>
+              <button
+                onClick={() => setShowDiagramModal(false)}
+                style={{
+                  background: 'transparent',
+                  color: '#fff',
+                  border: 'none',
+                  fontSize: '16px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  padding: '0 0.3rem',
+                }}
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+
+          {/* Body */}
+          <div className="guide-body" style={{ textAlign: 'center', padding: '16px 20px' }}>
+            {/* Image Box */}
+            <div
+              style={{
+                marginBottom: '14px',
+                borderRadius: '8px',
+                overflow: 'hidden',
+                border: '1px solid #d0d7de',
+                background: '#ffffff',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
+                padding: '6px',
+              }}
+            >
+              <img
+                src={physicalDiagramImg}
+                alt="Diagrama físico real de conexiones R1, R2 y R3 MikroTik con Switch y Laptop PC"
+                referrerPolicy="no-referrer"
+                style={{ width: '100%', height: 'auto', display: 'block', maxHeight: '60vh', objectFit: 'contain', margin: '0 auto', borderRadius: '4px' }}
+              />
+            </div>
+
+            {/* Cable Color Legend */}
+            <div style={{
+              background: '#f8fafc',
+              border: '1px solid #e2e8f0',
+              borderRadius: '8px',
+              padding: '12px 16px',
+              textAlign: 'left',
+              fontSize: '12.5px',
+              lineHeight: 1.6,
+            }}>
+              <b style={{ color: '#1e293b', fontSize: '13px', display: 'block', marginBottom: '6px' }}>
+                🔌 Guía de Cables y Puertos Físicos:
+              </b>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '8px' }}>
+                <div>🔘 <b>Cable Gris:</b> Switch MikroTik Port 1 (PoE IN) ➔ <code>R1 ether1</code> (Internet / ISP)</div>
+                <div>🔵 <b>Cable Azul:</b> <code>R1 ether2</code> ↔ <code>R2 ether2</code> (Red 172.16.12.0/24)</div>
+                <div>🟣 <b>Cable Morado:</b> <code>R1 ether3</code> ↔ <code>R3 ether2</code> (Red 172.16.13.0/24)</div>
+                <div>🟡 <b>Cable Amarillo:</b> <code>R2 ether3</code> ↔ <code>R3 ether3</code> (Red 172.16.23.0/24)</div>
+                <div>🟠 <b>Cable Naranja:</b> Laptop PC ➔ <code>ether4</code> del router que se va a probar</div>
+              </div>
+            </div>
+
+            <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
+              <button
+                onClick={downloadPhysicalDiagram}
+                style={{
+                  background: '#1f6f4a',
+                  color: '#fff',
+                  border: 'none',
+                  padding: '0.45rem 1.3rem',
+                  fontWeight: 600,
+                  fontSize: '13px',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                }}
+              >
+                📥 Descargar Imagen en Alta Calidad
+              </button>
+              <button
+                onClick={() => setShowDiagramModal(false)}
+                style={{
+                  background: '#fff',
+                  color: '#475569',
+                  border: '1px solid #cbd5e1',
+                  padding: '0.45rem 1.3rem',
+                  fontWeight: 600,
+                  fontSize: '13px',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                }}
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   function renderMapaContent() {
     return (
       <div className="c" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div style={{ width: '100%', maxWidth: '560px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+          <span style={{ fontSize: '11.5px', color: '#4a5568' }}>Topología física y lógica de enlaces</span>
+          <button
+            onClick={() => setShowDiagramModal(true)}
+            style={{
+              fontSize: '11px',
+              fontWeight: 600,
+              padding: '2px 8px',
+              background: '#eef5f1',
+              border: '1px solid #1f6f4a',
+              color: '#143825',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px',
+            }}
+          >
+            📷 Ver Foto Real y Descargar
+          </button>
+        </div>
         <div style={{ width: '100%', maxWidth: '560px', maxHeight: '240px', margin: '0 auto' }}>
           <svg
             viewBox="0 0 760 380"
@@ -2513,6 +2725,27 @@ export default function App() {
   function renderCablesContent() {
     return (
       <div className="c" id="cb">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '6px' }}>
+          <span style={{ fontSize: '12px', fontWeight: 600 }}>Estado de cables físicos entre routers:</span>
+          <button
+            onClick={() => setShowDiagramModal(true)}
+            style={{
+              fontSize: '11px',
+              fontWeight: 600,
+              padding: '2px 8px',
+              background: '#eef5f1',
+              border: '1px solid #1f6f4a',
+              color: '#143825',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px',
+            }}
+          >
+            📷 Ver Foto Real y Descargar
+          </button>
+        </div>
         <table>
           <thead>
             <tr>
